@@ -34,6 +34,8 @@ In the last exercise we implemented two simple surface shaders, which do not tak
     - Implement the ```CLightPoint::Illuminate()``` method. The method should calculate the light intensity, as described in the lecture, which hits the surface point from the light source as well as the direction vector from the surface point to the light source. The direction vector will be later used for shadow computations.
 2. Implement the _phong illumination model_
     - The value _L<sub>r</sub>_ returned by ```CShaderPhong::Illuminate()``` should be calculated according to:
+    
+    _L<sub>r</sub>_ = _k<sub>a</sub>c<sub>a</sub>L<sub>a</sub>_ + _k<sub>d</sub>c<sub>d</sub>_ SUM<sub>_l=0 to n-1_</sub> _L<sub>l</sub>_(**I**_<sub>l</sub>_·**N**)+ _k<sub>s</sub>c<sub>s</sub>_ SUM<sub>_l=0 to n-1_</sub>_L<sub>l</sub>_(**I**_<sub>l</sub>_·**R**)<sup>_k<sub>e</sub>_</sup>
 ## Problem 2.5
 ### Shadows (Points 20)
 To add more realism to the phong model we want now to incorporate shadows into it. Proceed as follows:
