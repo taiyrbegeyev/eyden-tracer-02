@@ -35,7 +35,30 @@ In the last exercise we implemented two simple surface shaders, which do not tak
 2. Implement the _phong illumination model_
     - The value _L<sub>r</sub>_ returned by ```CShaderPhong::Illuminate()``` should be calculated according to:
     
-    _L<sub>r</sub>_ = _k<sub>a</sub>c<sub>a</sub>L<sub>a</sub>_ + _k<sub>d</sub>c<sub>d</sub>_ SUM<sub>_l=0 to n-1_</sub> _L<sub>l</sub>_(**I**_<sub>l</sub>_·**N**)+ _k<sub>s</sub>c<sub>s</sub>_ SUM<sub>_l=0 to n-1_</sub>_L<sub>l</sub>_(**I**_<sub>l</sub>_·**R**)<sup>_k<sub>e</sub>_</sup>
+    _L<sub>r</sub>_ = _k<sub>a</sub>c<sub>a</sub>L<sub>a</sub>_ + _k<sub>d</sub>c<sub>d</sub>_ Σ<sub>_l=0_</sub><sup>_n-1_</sup> _L<sub>l</sub>_(**I**<sub>_l_</sub>·**N**)+ _k<sub>s</sub>c<sub>s</sub>_ Σ<sub>_l=0_</sub><sup>_n-1_</sup> _L<sub>l</sub>_(**I**_<sub>l</sub>_·**R**)<sup>_k<sub>e</sub>_</sup>
+    
+    _c<sub>a</sub>_: Ambient color   
+    _c<sub>d</sub>_: Diffuse color  
+    _c<sub>s</sub>_: Specular color (Use _c<sub>s</sub>_ = (1, 1, 1) for white highlights)  
+    
+    _k<sub>a</sub>_: Ambient coefficient  
+    _k<sub>d</sub>_: Diffuse coefficient  
+    _k<sub>s</sub>_: Specular coefficient  
+    _k<sub>e</sub>_: Exponent (_shine_ parameter)  
+    
+    _L<sub>a</sub>_: Ambient radiance  
+    _L<sub>l</sub>_: Radiance arriving from light source _l_  
+    
+    **I**<sub>_l_</sub>: Direction to light source _l_  
+    **N**: Shading normal  
+    **R**: Reflected incident ray direction (must point away from the surface)
+    
+    _n_: Number of lights sources
+    
+### Notes:
+- Sometimes an incident ray may hit the backside of a surface (_i.e._ the shading normal points to the other side.) Then, just turn the shading normal around to face forward.
+- Only consider light sources that illuminate the primitive from its front-side (_i.e._ **I**<sub>_l_</sub>·**N** > 0).
+    
 ## Problem 2.5
 ### Shadows (Points 20)
 To add more realism to the phong model we want now to incorporate shadows into it. Proceed as follows:
