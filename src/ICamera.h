@@ -26,10 +26,8 @@ public:
 	 * @param[in] x The x-coordinate of the pixel lying on the camera screen
 	 * @param[in] y The y-coordinate of the pixel lying on the camera screen
 	 * @param[out] ray Reference to the @ref Ray structure to be filled
-	 * @retval true on success
-	 * @retval false otherwise
 	 */
-	virtual bool InitRay(float x, float y, Ray& ray) = 0;
+	virtual void InitRay(float x, float y, Ray& ray) = 0;
 	
 	/**
 	 * @brief Retuns the camera resolution

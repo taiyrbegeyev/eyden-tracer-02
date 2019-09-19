@@ -2,7 +2,10 @@
 // Written by Sergey Kosov in 2005 for Rendering Competition
 #pragma once
 
-#include "ray.h"
+
+#include "types.h"
+
+struct Ray;
 
 /**
  * @brief Geometrical Primitives (Prims) base abstract class
@@ -26,4 +29,14 @@ public:
 	 * @retval false Otherwise
 	 */
 	virtual bool	Intersect(Ray& ray) = 0;
+	/**
+	 * @brief Checks if the \b ray.org is occluded
+	 */
+	virtual bool	Occluded(Ray& ray) { return Intersect(ray); }
+	/**
+	 * @brief Returns the normalized normal of the primitive
+	 * @param ray The ray
+	 * @return The normalized normal of the primitive
+	 */
+	virtual Vec3f	GetNormal(const Ray& ray) const = 0;
 };
