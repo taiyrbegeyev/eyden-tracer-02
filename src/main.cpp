@@ -1,8 +1,17 @@
+#include "Scene.h"
+
 #include "CameraPerspective.h"
 
 #include "PrimSphere.h"
 #include "PrimPlane.h"
 #include "PrimTriangle.h"
+
+#include "ShaderFlat.h"
+#include "ShaderEyelight.h"
+#include "ShaderPhong.h"
+
+#include "LightPoint.h"
+#include "LightArea.h"
 
 Mat RenderFrame(ICamera& camera)
 {
