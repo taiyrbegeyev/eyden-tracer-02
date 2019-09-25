@@ -24,7 +24,8 @@ where _theta_ is the angle between the primitive surface normal and the ray dire
     - Implement the ```Vec3f Primitive::GetNormal(Ray& ray)``` method in all classes derived from ```CPrim```. ```GetNormal(Ray& ray)``` should return the normalized normal of the primitive. The ray parameter passed to ```GetNormal(Ray& ray)``` should be a ray that has been successfully intersected before, so you can assume that the intersection stored in this ray corresponds to the actual primitive. For example, ray.org + ray.t * ray.dir should be a point on the primitive.
     - Implement the shading function ```CShaderEyelight::Shade(Ray& ray)``` using ```ray.hit->GetNormal(ray)``` to retrieve the surface normal of the primitive. With the surface normal the above given formula can be applied. If the test scene specified in main.cpp is rendered with these two shaders it should look like:
     
-![]()
+<img src="./doc/flat.jpg" alt="Flat Shading" width="400px"/> <img src="./doc/eye_light.jpg" alt="Eylight Shading" width="400px"/>
+
 ## Problem 2.4
 ### Phong Shading and Point Light sources
 In the last exercise we implemented two simple surface shaders, which do not take light sources into account. A more advanced surface shading concept, the _phong shading model_, utilizes light sources to increase the rendering realism and give objects a plastic like appearance. Before we can implement the ```CShaderPhong::Shade()``` method in ShaderPhong.h we have to implement a simple light source.
@@ -66,7 +67,8 @@ To add more realism to the phong model we want now to incorporate shadows into i
 - Modify ```CShaderPhong::Shade()``` to check for occlusion.
 If everything is implemented correct your images should look like this:
 
-![]()
+<img src="./doc/phong_no_shadows.jpg" alt="Phong Shading without shadows" width="400px"/> <img src="./doc/phong.jpg" alt="Phong Shading with shadows" width="400px"/>
+
 ## Problem 2.6
 ### Area Lights (Points 20)
 As you have learned in the last exercise, shadows can add important visual information to an image. Until now we have only considered point lights. Point lights create _hard shadows_ because a point light can not be partly occluded and is either blocked or not. To render more realistic shadows we need amore advanced light source. _Area Lights_ are able to produce _soft shadows_ which are more natural. In this exercise we implement a ```CLightArea``` (in LightArea.h) which is defined by four points in space:
@@ -76,4 +78,4 @@ As you have learned in the last exercise, shadows can add important visual infor
 - Render an image with 1000 shadow rays per pixel
 If everything is implemented correct your images should look like this:
 
-![]()
+![Area Light](./doc/area_light.jpg)
