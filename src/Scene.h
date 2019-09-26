@@ -38,7 +38,7 @@ public:
 		// --- PUT YOUR CODE HERE ---
 	}
   
-	/*
+	/**
 	 * @brief Checks intersection of ray \b ray with all contained objects
 	 * @param ray The ray
 	 * @retval true If ray \b ray intersects any object

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ILight.h"
+#include "random.h"
 
 /**
  * @brief Area light sourse class
@@ -24,9 +25,7 @@ public:
 		, m_e1(p1 - p0)
 		, m_e2(p3 - p0)
 	{ 
-		m_normal = m_e1.cross(m_e2);
-		m_area = norm(m_normal);
-		m_normal = normalize(m_normal);
+		// --- PUT YOUR CODE HERE ---
 	}  
 
 	virtual std::optional<Vec3f> Illuminate(Ray& ray) override

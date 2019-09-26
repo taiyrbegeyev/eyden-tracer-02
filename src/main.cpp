@@ -13,38 +13,61 @@
 #include "LightPoint.h"
 #include "LightArea.h"
 
-Mat RenderFrame(ICamera& camera)
+Mat RenderFrame(void)
 {
-	// scene objects
-	
-	CPrimSphere s1(Vec3f(-2, 1.7f, 0), 2);
-	CPrimSphere s2(Vec3f(1, -1, 1), 2.2f);
-	CPrimSphere s3(Vec3f(3, 0.8f, -2), 2);
-	CPrimPlane p1(Vec3f(0, -1, 0), Vec3f(0, 1, 0));
-	
-	CPrimTriangle t1(Vec3f(-2, 3.7f, 0), Vec3f(1, 2, 1), Vec3f(3, 2.8f, -2));
-	CPrimTriangle t2(Vec3f(3, 2, 3), Vec3f(3, 2, -3), Vec3f(-3, 2, -3));
-	
-	Mat img(camera.getResolution(), CV_32FC3); 	// image array
-	Ray ray;                            		// primary ray
-	
-	for(int y = 0; y< img.rows; y++)
+	// Define a scene
+	CScene scene;
+
+	// Flat surface shaders
+	auto shd1 = std::make_shared<CShaderFlat>(RGB(1, 0, 0)); // red surface
+	auto shd2 = std::make_shared<CShaderFlat>(RGB(0, 1, 0)); // green surface
+	auto shd3 = std::make_shared<CShaderFlat>(RGB(0, 0, 1)); // blue surface
+	auto shd4 = std::make_shared<CShaderFlat>(RGB(1, 1, 0)); // yellow surface
+	auto shd5 = std::make_shared<CShaderFlat>(RGB(0, 1, 1)); // cyan surface
+	auto shd6 = std::make_shared<CShaderFlat>(RGB(1, 1, 1)); // white surface
+
+	// EyeLight surface shaders
+//	auto shd1 = std::make_shared<CShaderEyelight>(RGB(1, 0, 0)); // red surface
+//	auto shd2 = std::make_shared<CShaderEyelight>(RGB(0, 1, 0)); // green surface
+//	auto shd3 = std::make_shared<CShaderEyelight>(RGB(0, 0, 1)); // blue surface
+//	auto shd4 = std::make_shared<CShaderEyelight>(RGB(1, 1, 0)); // yellow surface
+//	auto shd5 = std::make_shared<CShaderEyelight>(RGB(0, 1, 1)); // cyan surface
+//	auto shd6 = std::make_shared<CShaderEyelight>(RGB(1, 1, 1)); // white surface
+
+	// Phong surface shaders
+//	auto shd1 = std::make_shared<CShaderPhong>(scene, RGB(1, 0, 0), 0.1f, 0.5f, 0.5f, 40); // red surface
+//	auto shd2 = std::make_shared<CShaderPhong>(scene, RGB(0, 1, 0), 0.1f, 0.5f, 0.5f, 40); // green surface
+//	auto shd3 = std::make_shared<CShaderPhong>(scene, RGB(0, 0, 1), 0.1f, 0.5f, 0.5f, 40); // blue surface
+//	auto shd4 = std::make_shared<CShaderPhong>(scene, RGB(1, 1, 0), 0.1f, 0.5f, 0.5f, 40); // yellow surface
+//	auto shd5 = std::make_shared<CShaderPhong>(scene, RGB(0, 1, 1), 0.1f, 0.5f, 0.5f, 40); // cyan surface
+//	auto shd6 = std::make_shared<CShaderPhong>(scene, RGB(1, 1, 1), 0.1f, 0.5f, 0.5f, 40); // white surface
+
+	// Add primitives to scene
+	scene.Add(std::make_shared<CPrimSphere>(Vec3f(-2, 1.7f, 0), 2, shd1));
+	scene.Add(std::make_shared<CPrimSphere>(Vec3f(1, -1, 1), 2.2f, shd2));
+	scene.Add(std::make_shared<CPrimSphere>(Vec3f(3, 0.8f, -2), 2, shd3));
+	scene.Add(std::make_shared<CPrimPlane>(Vec3f(0, -1, 0), Vec3f(0, 1, 0), shd4));
+	scene.Add(std::make_shared<CPrimTriangle>(Vec3f(-2, 3, 1),Vec3f(1, 2, 1),Vec3f(3, 2.8f, 3), shd5));
+
+	Vec3f pointLightIntensity(5, 5, 5);
+//	Vec3f areaLightIntensity(25, 25, 25);
+	Vec3f lightPosition1(0, 50, 0);
+	Vec3f lightPosition2(-3, 5, +4);
+
+	// Add light sources to scene
+	scene.Add(std::make_shared<CLightPoint>(pointLightIntensity, lightPosition1));
+	scene.Add(std::make_shared<CLightPoint>(pointLightIntensity, lightPosition2));
+//	scene.Add(std::make_shared<CLightArea>(areaLightIntensity, Vec3f(-1.5f, 10, -1.5f), Vec3f(1.5f, 10, 1.5f), Vec3f(1.5f, 10, -1.5f), Vec3f(-1.5f, 10, 1.5f)));
+
+
+
+	Mat img(scene.m_pCamera->getResolution(), CV_32FC3);		// image array
+	Ray ray;                                          			// primary ray
+
+	for (int y = 0; y < img.rows; y++)
 		for (int x = 0; x < img.cols; x++) {
-			
-			// Initialize your ray here
-			
-			// Your code
-			
-			Vec3f col = RGB(0, 0, 0); // background color
-			
-			/*
-			 * Find closest intersection with scene
-			 * objetcs and calculate color
-			 */
-			
-			// Your code
-			
-			img.at<Vec3f>(y, x) = col; // store pixel color
+			scene.m_pCamera->InitRay(x, y, ray); // initialize ray
+			img.at<Vec3f>(y, x) = scene.RayTrace(ray); 
 		}
 	
 	img.convertTo(img, CV_8UC3, 255);
@@ -53,19 +76,9 @@ Mat RenderFrame(ICamera& camera)
 
 int main(int argc, char* argv[])
 {
-	const Size resolution(800, 600);
-	// render three images with different camera settings
-	
-	CCameraPerspective c1(Vec3f(0, 0, 10), Vec3f(0, 0, -1), Vec3f(0, 1, 0), 60, resolution);
-	Mat img1 = RenderFrame(c1);
-	imwrite("perspective1.jpg", img1);
-	
-	CCameraPerspective c2(Vec3f(-8, 3, 8), Vec3f(1, -0.1f, -1), Vec3f(0, 1, 0), 45, resolution);
-	Mat img2 = RenderFrame(c2);
-	imwrite("perspective2.jpg", img2);
-	
-	CCameraPerspective c3(Vec3f(-8, 3, 8), Vec3f(1, -0.1f, -1), Vec3f(1, 1, 0), 45, resolution);
-	Mat img3 = RenderFrame(c3);
-	imwrite("perspective3.jpg", img3);
+	Mat img = RenderFrame();
+	imshow("Image", img);
+	waitKey();
+	imwrite("flat.jpg", img);
 	return 0;
 }

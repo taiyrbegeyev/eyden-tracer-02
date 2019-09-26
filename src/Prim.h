@@ -2,8 +2,8 @@
 // Written by Sergey Kosov in 2005 for Rendering Competition
 #pragma once
 
-
 #include "types.h"
+#include "IShader.h"
 
 struct Ray;
 
@@ -16,7 +16,7 @@ public:
 	/**
 	* @brief Constructor
 	*/
-	CPrim(void) = default;
+	CPrim(std::shared_ptr<IShader> pShader) : m_pShader(pShader) {}
 	CPrim(const CPrim&) = delete;
 	virtual ~CPrim(void) = default;
 	const CPrim& operator=(const CPrim&) = delete;
@@ -39,4 +39,9 @@ public:
 	 * @return The normalized normal of the primitive
 	 */
 	virtual Vec3f	GetNormal(const Ray& ray) const = 0;
+	
+	std::shared_ptr<IShader> getShader(void) const { return m_pShader; }
+
+private:
+	std::shared_ptr<IShader>	m_pShader;
 };
