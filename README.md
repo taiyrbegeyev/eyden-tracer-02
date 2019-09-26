@@ -2,13 +2,16 @@
 ## Problem 2.2
 ### Encapsulate camera and primitives from main application logic (Points 5)
 1. Fork the current repository
-2. Study the new framework-code of Shader.h, ShaderFlat.h, ShaderEyeLight.h, Scene.h, and main.cpp
+2. Study the new framework-code of 
+    - IShader.h, ShaderFlat.h, ShaderEyeLight.h, ShaderPhong.h
+    - ILight.h, LightPoint.h, LightArea.h 
+    - Scene.h and main.cpp
 3. A pointer ```CPrim* hit``` is now contained in your ```Ray``` structure. After a ray has been successfully intersected with a primitive, store the primitive’s address in ```hit``` (if the hit ditance is smaller than ```ray.t```).
-4. In the class ```CScene``` you find a method ```Add(Primitive*)```. Change your code accordingly using the appropriate vector defined in the class.
-5. Rather then intersecting each primitive in the main function we will now use the ```Intersect(Ray& ray)``` method of the ```Scene``` class. After modification the method should iterate over all primitives, intersect them and return true or false depending on if we had a valid hit with the scene data or not.
-6. The loop of main.cpp calls the ```CScene::RayTrace(Ray& ray)``` method. This method should call ```Intersect()``` and depending on a hit or not return a white or black color.
+4. In the class ```CScene``` you find a method ```void Add(const std::shared_ptr<CPrim> pPrim)```. Change your code accordingly using the appropriate vector defined in the class.
+5. Rather then intersecting each primitive in the main function we will now use the ```bool Intersect(Ray& ray) const``` method of the ```Scene``` class. After modification the method should iterate over all primitives, intersect them and return true or false depending on if we had a valid hit with the scene data or not.
+6. The loop of main.cpp calls the ```CScene::RayTrace(Ray& ray)``` method. This method should call ```bool Intersect(Ray& ray) ``` and depending on a hit or not return a white or black color.
 ## Problem 2.3
-### The Surface-Shader Concept (Points 10 + 10 + 30)
+### The Surface-Shader Concept (Points 10 + 10)
 A _surface-shader_ is a small program that is assigned to a primitive and is responsible for computing the color of each ray hitting this primitive. For example, a _flat shader_ might just return a constant color for a primitive, whereas another shader might compute more complex effects such as lighting, shadows, or texturing.
 
 In this exercise, you will add some missing parts of the given basic shader framework to your ray tracer and implement two simple shaders:
@@ -27,7 +30,7 @@ where _theta_ is the angle between the primitive surface normal and the ray dire
 <img src="./doc/flat.jpg" alt="Flat Shading" width="400px"/> <img src="./doc/eye_light.jpg" alt="Eylight Shading" width="400px"/>
 
 ## Problem 2.4
-### Phong Shading and Point Light sources
+### Phong Shading and Point Light sources (Points 30)
 In the last exercise we implemented two simple surface shaders, which do not take light sources into account. A more advanced surface shading concept, the _phong shading model_, utilizes light sources to increase the rendering realism and give objects a plastic like appearance. Before we can implement the ```CShaderPhong::Shade()``` method in ShaderPhong.h we have to implement a simple light source.
 1. Implement a point light. Proceed as follows:
     - Study the base class ```CLight```. Each light source which we will derive from it has to implement an ```Illuminate(Ray& ray, Vec3f& intensity)``` method.
