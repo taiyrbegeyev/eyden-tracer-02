@@ -31,13 +31,13 @@ where _theta_ is the angle between the primitive surface normal and the ray dire
 
 ## Problem 2.4
 ### Phong Shading and Point Light sources (Points 30)
-In the last exercise we implemented two simple surface shaders, which do not take light sources into account. A more advanced surface shading concept, the _phong shading model_, utilizes light sources to increase the rendering realism and give objects a plastic like appearance. Before we can implement the ```CShaderPhong::Shade()``` method in ShaderPhong.h we have to implement a simple light source.
+In the last exercise we implemented two simple surface shaders, which do not take light sources into account. A more advanced surface shading concept, the _phong shading model_, utilizes light sources to increase the rendering realism and give objects a plastic like appearance. Before we can implement the ```CShaderPhong::Shade(const Ray& ray)``` method in ShaderPhong.h we have to implement a simple light source.
 1. Implement a point light. Proceed as follows:
-    - Study the base class ```CLight```. Each light source which we will derive from it has to implement an ```Illuminate(Ray& ray, Vec3f& intensity)``` method.
-    - Implement the ```CScene::Add(Light*)``` method.
-    - Implement the ```CLightPoint::Illuminate()``` method. The method should calculate the light intensity, as described in the lecture, which hits the surface point from the light source as well as the direction vector from the surface point to the light source. The direction vector will be later used for shadow computations.
+    - Study the base interface class ```ILight```. Each light source which we will derive from it has to implement an ```ILight::Illuminate(Ray& ray)``` method.
+    - Implement the ```CScene::Add(std::shared_ptr<ILight> pLight)``` method.
+    - Implement the ```CLightPoint::Illuminate(Ray& ray)``` method. The method should calculate the light intensity, as described in the lecture, which hits the surface point from the light source as well as the direction vector from the surface point to the light source. The direction vector will be later used for shadow computations.
 2. Implement the _phong illumination model_
-    - The value _L<sub>r</sub>_ returned by ```CShaderPhong::Illuminate()``` should be calculated according to:
+    - The value _L<sub>r</sub>_ returned by ```CShaderPhong::Illuminate(Ray& ray)``` should be calculated according to:
     
     _L<sub>r</sub>_ = _k<sub>a</sub>c<sub>a</sub>L<sub>a</sub>_ + _k<sub>d</sub>c<sub>d</sub>_ Σ<sub>_l=0_</sub><sup>_n-1_</sup> _L<sub>l</sub>_(**I**<sub>_l_</sub>·**N**)+ _k<sub>s</sub>c<sub>s</sub>_ Σ<sub>_l=0_</sub><sup>_n-1_</sup> _L<sub>l</sub>_(**I**_<sub>l</sub>_·**R**)<sup>_k<sub>e</sub>_</sup>
     
@@ -66,8 +66,8 @@ In the last exercise we implemented two simple surface shaders, which do not tak
 ## Problem 2.5
 ### Shadows (Points 20)
 To add more realism to the phong model we want now to incorporate shadows into it. Proceed as follows:
-- Implement the method ```Occluded()``` in the ```CScene``` class, which should check if something blocks the light.
-- Modify ```CShaderPhong::Shade()``` to check for occlusion.
+- Implement the method ```CScene::Occluded(Ray& ray)``` in the ```CScene``` class, which should check if something blocks the light.
+- Modify ```CShaderPhong::Shade(const Ray& ray)``` to check for occlusion.
 If everything is implemented correct your images should look like this:
 
 <img src="./doc/phong_no_shadows.jpg" alt="Phong Shading without shadows" width="400px"/> <img src="./doc/phong.jpg" alt="Phong Shading with shadows" width="400px"/>
@@ -76,8 +76,8 @@ If everything is implemented correct your images should look like this:
 ### Area Lights (Points 20)
 As you have learned in the last exercise, shadows can add important visual information to an image. Until now we have only considered point lights. Point lights create _hard shadows_ because a point light can not be partly occluded and is either blocked or not. To render more realistic shadows we need amore advanced light source. _Area Lights_ are able to produce _soft shadows_ which are more natural. In this exercise we implement a ```CLightArea``` (in LightArea.h) which is defined by four points in space:
 - Calculate the normal and the area of the LightArea in the constructor.
-- Calculate the intensity as described in the lecture by generating a random sample position on the area light (using ```dgm::random::U()``` and bi-linear interpolation).
-- Add ```CLightArea areaLight(&scene, lightIntensity, Vec3f(-1.5f, 10.0f, -1.5f), Vec3f(1.5f, 10.0f, 1.5f), Vec3f(1.5f, 10.0f, -1.5f), Vec3f(-1.5f, 10.0f, 1.5f));``` to main.cpp and remove the point lights.
+- Calculate the intensity as described in the lecture by generating a random sample position on the area light (using ```DirectGraphicalModels::random::U()``` function from random.h file and bi-linear interpolation).
+- Add ```scene.Add(std::make_shared<CLightArea>(areaLightIntensity, Vec3f(-1.5f, 10, -1.5f), Vec3f(1.5f, 10, 1.5f), Vec3f(1.5f, 10, -1.5f), Vec3f(-1.5f, 10, 1.5f)));``` to main.cpp and remove the point lights.
 - Render an image with 1000 shadow rays per pixel
 If everything is implemented correct your images should look like this:
 
