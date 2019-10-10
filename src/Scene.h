@@ -37,6 +37,7 @@ public:
 	void Add(const std::shared_ptr<ILight> pLight)
 	{
 		// --- PUT YOUR CODE HERE ---
+        m_vpLights.push_back(pLight);
 	}
   
 	/**
@@ -62,7 +63,7 @@ public:
 	bool Occluded(Ray& ray)
 	{
 		// --- PUT YOUR CODE HERE ---
-		return false;
+//        return Intersect(ray);
 	}
 
 	/**
@@ -72,12 +73,13 @@ public:
 	Vec3f RayTrace(Ray& ray) const
 	{
 		// --- PUT YOUR CODE HERE ---
-        if (Intersect(ray)) {
-            return ray.hit->getShader()->Shade(ray);
+        Vec3f color = m_bgColor;
+        for (auto primitive: m_vpPrims) {
+            if (primitive->Intersect(ray)) {
+                color = ray.hit->getShader()->Shade(ray);
+            }
         }
-        else {
-            return m_bgColor;
-        }
+        return color;
 	}
 
 

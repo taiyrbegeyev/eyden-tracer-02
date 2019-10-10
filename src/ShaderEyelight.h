@@ -23,7 +23,8 @@ public:
 	{
 		// --- PUT YOUR CODE HERE ---
         float theta = ray.hit->GetNormal(ray).dot(-ray.dir);
-        return abs(theta) * CShaderFlat::Shade(ray);
+        // since we are dealing with float, we need to use fabs instead of abs
+        return fabs(theta) * CShaderFlat::Shade(ray);
 	}
 };
 
